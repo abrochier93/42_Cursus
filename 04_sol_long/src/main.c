@@ -1,7 +1,20 @@
-#include "get_next_line.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abrochie <abrochie@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/31 14:56:21 by abrochie          #+#    #+#             */
+/*   Updated: 2023/04/06 15:02:37 by abrochie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void    init_file(t_file *file)
+#include "so_long.h"
+
+void    ft_init_struct(t_file *file)
 {
+	file->mlx = NULL;
     file->map = NULL;
     file->n_collect = 0;
     file->n_player = 0;
@@ -19,18 +32,48 @@ void    init_file(t_file *file)
     file->has_a_path = 0;
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-    t_file file;
-    int map_error;
-    (void)ac;
-    
-    init_file(&file);
-    map_error = ft_check_map(av[1], &file);
-    if (map_error == -1)
-        return(0);
-    printf("nombre de cols : %d\nnombre de rows : %d\n", file.n_cols, file.n_rows);
-    printf("coordonnées du joueur (x;y) : [%d];[%d]\n", file.player_pos.x, file.player_pos.y);
-    free(file.map);
-    return (0);
+	t_file	map;
+	// int map_error;
+	// int y = 0;
+	// int x = 0;
+
+	if (ac < 2)
+		ft_file_missing();
+	else if (ac > 2)
+		ft_to_many_file();
+	else if (ft_check_file(av[1]) == -1)
+		return (0);
+	else if (ac == 2)
+	{
+		ft_init_struct(&map);
+		ft_init_map(av[1], &map);
+		ft_validate_map(&map);
+		ft_render_game(&map);
+		//si return -1 return (0)
+		//ft_launch_game(&map);
+	}
+	printf("Nombre de player : %d\n", map.n_player);
+	printf("Nombre de collectible : %d\n", map.n_collect);
+	printf("Nombre de exit : %d\n", map.n_exit);
+	printf("Nombre de colonnes : %d\n", map.n_cols);
+	printf("Nombre de lignes : %d\n", map.n_rows);
+	printf("Nombre de foreign char : %d\n", map.n_foreign);
+	printf("Coordonnées du joueur tab[%d][%d]\n", map.player_pos.y, map.player_pos.x);
+	//ft_render_map(map);
+
+	// while (y < map.n_rows)
+	// {
+	// 	x = 0;
+	// 	while (x < map.n_cols)
+	// 	{
+	// 		write(1, &map.map[y][x], 1);
+	// 		x++;
+	// 	}
+	// 	write(1, "\n", 1);
+	// 	y++;
+	// }
+	free_matrix(map.map);
+	return (0);
 }
